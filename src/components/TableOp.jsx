@@ -8,6 +8,7 @@ export default function TableOp({
   menuopen,
   tableData,
   setTableData,
+  sentItem,
 }) {
   const [waitersNames, setWaitersNames] = useState();
   const [selectedWaiterId, setSelectedWaiterId] = useState(null);
@@ -20,7 +21,7 @@ export default function TableOp({
       setWaitersNames(data.data.rows);
     };
     getnames();
-  }, []);
+  }, [sentItem]);
   const handleDelete = async () => {
     const deleteTable = await axios.delete(
       `https://nodefinalprojectback.onrender.com/tables/deleTableById/${id}`

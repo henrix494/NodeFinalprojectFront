@@ -12,7 +12,6 @@ function App() {
   const [itemid, setItemId] = useState(null);
   const [menuopen, setMenuOpen] = useState(false);
 
-  const handleDelete = (id) => {};
   const handleAddTabe = async () => {
     const addTable = await axios.post(
       "https://nodefinalprojectback.onrender.com/tables/addTable"
@@ -60,19 +59,62 @@ function App() {
     );
     setTableData(getData.data);
   };
+  const [waiterName, setWaiterName] = useState();
+  const [sentItem, setSendItem] = useState(false);
+  const addWaiter = async () => {
+    await axios.post(
+      "https://nodefinalprojectback.onrender.com/waiters/addWaiter",
+      {
+        waiterName: waiterName,
+      }
+    );
+    setSendItem((prev) => {
+      !prev;
+    });
+  };
+
   return (
     <div>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div>
-          <div className="mb-10 flex justify-center mt-10">
+          <div className="mb-10 flex justify-center mt-10 gap-10">
             <button
               onClick={handleAddTabe}
               className="btn btn-success text-white "
             >
               הוסף שולחן
             </button>
+            <button
+              className="btn btn-success text-white"
+              onClick={() => document.getElementById("my_modal_1").showModal()}
+            >
+              הוסף מלצר{" "}
+            </button>
+            <dialog id="my_modal_1" className="modal">
+              <div className="modal-box flex flex-col gap-6 items-end">
+                <h3 className="font-bold text-lg"> הכנס של של מלצר</h3>
+
+                <input
+                  onChange={(e) => {
+                    setWaiterName(e.target.value);
+                  }}
+                  type="text"
+                  placeholder="שם מלצר "
+                  className="input input-bordered w-full placeholder:text-right text-right "
+                />
+
+                <div className="modal-action">
+                  <form method="dialog">
+                    <button className="btn mr-10">סגור</button>
+                    <button className="btn btn-success" onClick={addWaiter}>
+                      הוסף
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </dialog>{" "}
           </div>
           <div className="flex flex-wrap gap-10 justify-center ">
             {tableInfo?.map((item) => {
@@ -101,6 +143,7 @@ function App() {
       )}
       <div className=" ">
         <TableOp
+          sentItem={sentItem}
           tableData={tableData}
           id={itemid}
           close={closeModel}
