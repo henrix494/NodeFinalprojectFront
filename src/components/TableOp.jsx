@@ -15,7 +15,7 @@ export default function TableOp({
   useEffect(() => {
     const getnames = async () => {
       const data = await axios.get(
-        "https://node-finalproject.vercel.app/waiters/"
+        "https://nodefinalprojectback.onrender.com/waiters/"
       );
       setWaitersNames(data.data.rows);
     };
@@ -23,11 +23,11 @@ export default function TableOp({
   }, []);
   const handleDelete = async () => {
     const deleteTable = await axios.delete(
-      `https://node-finalproject.vercel.app/tables/deleTableById/${id}`
+      `https://nodefinalprojectback.onrender.com/tables/deleTableById/${id}`
     );
     try {
       const response = await axios.get(
-        "https://node-finalproject.vercel.app/tables"
+        "https://nodefinalprojectback.onrender.com/tables"
       );
       setTableInfo(response.data.rows);
     } catch (error) {
@@ -42,7 +42,7 @@ export default function TableOp({
   };
   const sendWaiterToDb = async () => {
     const sendDataToDb = await axios.post(
-      "https://node-finalproject.vercel.app/waiters/AddTableToWaiter",
+      "https://nodefinalprojectback.onrender.com/waiters/AddTableToWaiter",
       {
         waiterId: selectedWaiterId,
         TableId: id,
@@ -50,11 +50,11 @@ export default function TableOp({
     );
     try {
       const response = await axios.get(
-        "https://node-finalproject.vercel.app/tables"
+        "https://nodefinalprojectback.onrender.com/tables"
       );
       setTableInfo(response.data.rows);
       const getData = await axios.get(
-        `https://node-finalproject.vercel.app/tables/getTableById/${id}`
+        `https://nodefinalprojectback.onrender.com/tables/getTableById/${id}`
       );
       setTableData(getData.data);
       console.log(tableData);

@@ -15,11 +15,11 @@ function App() {
   const handleDelete = (id) => {};
   const handleAddTabe = async () => {
     const addTable = await axios.post(
-      "https://node-finalproject.vercel.app/tables/addTable"
+      "https://nodefinalprojectback.onrender.com/tables/addTable"
     );
     try {
       const response = await axios.get(
-        "https://node-finalproject.vercel.app/tables"
+        "https://nodefinalprojectback.onrender.com/tables"
       );
       setTableInfo(response.data.rows);
       setNumOfTables(response.data.count);
@@ -32,7 +32,7 @@ function App() {
     const getAllTables = async () => {
       try {
         const response = await axios.get(
-          "https://node-finalproject.vercel.app/tables/"
+          "https://nodefinalprojectback.onrender.com/tables/"
         );
         setTableInfo(response.data.rows);
         setNumOfTables(response.data.count);
@@ -56,7 +56,7 @@ function App() {
   };
   const getTable = async (id) => {
     const getData = await axios.get(
-      `https://node-finalproject.vercel.app/tables/getTableById/${id}`
+      `https://nodefinalprojectback.onrender.com/tables/getTableById/${id}`
     );
     setTableData(getData.data);
   };
