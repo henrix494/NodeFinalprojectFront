@@ -85,7 +85,7 @@ export default function TableOp({
   };
   return (
     <div
-      className={`fixed right-0 bg-slate-300 h-screen top-0 transition-all duration-500 w-[40dvh]  ${
+      className={`fixed right-0 bg-slate-300 h-screen top-0 transition-all duration-500 w-[40dvh]   overflow-auto ${
         menuopen ? "translate-x-[0%] " : " translate-x-[100%] "
       }`}
     >
