@@ -46,7 +46,7 @@ export default function Seecurrent({ tableData }) {
               <ul>
                 {orderData.meals.map((meal, index) => (
                   <li key={index}>
-                    {meal.mealName} - כמות: {meal.mealOrder.count} - מחיר:{" "}
+                    {meal.name} - כמות: {meal.mealOrder.count} - מחיר:{" "}
                     {meal.price} ש"ח
                   </li>
                 ))}

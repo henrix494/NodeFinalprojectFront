@@ -75,7 +75,7 @@ export default function AddOrder({
               key={item.id}
               className="flex flex-row-reverse w-full justify-around  text-xl border-b-2"
             >
-              <p className="w-[33%]">{item.mealName}</p>
+              <p className="w-[33%]">{item.name}</p>
               <div className="flex items-center gap-5">
                 <button onClick={() => removeItemFromCart(item.id)}>-</button>
                 <p>
