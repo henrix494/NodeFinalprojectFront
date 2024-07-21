@@ -1,5 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { baseUrl } from "../constants/baseUrl";
+import AddOrder from "./addOrder/AddOrder";
+import DeleteWaiterFromTable from "./deleteWaiterFromTable/DeleteWaiterFromTable";
+import Seecurrent from "./Seecurrent/Seecurrent";
 export default function TableOp({
   id,
   close,
@@ -9,27 +13,25 @@ export default function TableOp({
   tableData,
   setTableData,
   sentItem,
+  getTable,
+  getAllTables,
 }) {
   const [waitersNames, setWaitersNames] = useState();
   const [selectedWaiterId, setSelectedWaiterId] = useState(null);
 
   useEffect(() => {
     const getnames = async () => {
-      const data = await axios.get(
-        "https://nodefinalprojectback.onrender.com/waiters/"
-      );
+      const data = await axios.get(`${baseUrl}/waiters/waiters`);
       setWaitersNames(data.data.rows);
     };
     getnames();
   }, [sentItem]);
   const handleDelete = async () => {
     const deleteTable = await axios.delete(
-      `https://nodefinalprojectback.onrender.com/tables/deleTableById/${id}`
+      `${baseUrl}/tables/deleTableById/${id}`
     );
     try {
-      const response = await axios.get(
-        "https://nodefinalprojectback.onrender.com/tables"
-      );
+      const response = await axios.get(`${baseUrl}/tables`);
       setTableInfo(response.data.rows);
     } catch (error) {
       console.error("Error fetching tables:", error);
@@ -43,28 +45,44 @@ export default function TableOp({
   };
   const sendWaiterToDb = async () => {
     const sendDataToDb = await axios.post(
-      "https://nodefinalprojectback.onrender.com/waiters/AddTableToWaiter",
+      `${baseUrl}/waiters/AddTableToWaiter`,
       {
         waiterId: selectedWaiterId,
         TableId: id,
       }
     );
     try {
-      const response = await axios.get(
-        "https://nodefinalprojectback.onrender.com/tables"
-      );
+      const response = await axios.get(`${baseUrl}/tables`);
       setTableInfo(response.data.rows);
-      const getData = await axios.get(
-        `https://nodefinalprojectback.onrender.com/tables/getTableById/${id}`
-      );
+      const getData = await axios.get(`${baseUrl}/tables/getTableById/${id}`);
       setTableData(getData.data);
       console.log(tableData);
     } catch (error) {
       console.error("Error fetching tables:", error);
     }
-    console.log(sendDataToDb);
   };
-
+  const startOrder = async () => {
+    try {
+      const startOr = await axios.post(`${baseUrl}/orders/startOrder/${id}`);
+      const response = await axios.get(`${baseUrl}/tables`);
+      const getData = await axios.get(`${baseUrl}/tables/getTableById/${id}`);
+      setTableData(getData.data);
+      setTableInfo(response.data.rows);
+    } catch (error) {
+      console.error("Error fetching tables:", error);
+    }
+  };
+  const endOrder = async () => {
+    try {
+      const endOr = await axios.post(`${baseUrl}/orders/endOrder/${id}`);
+      const response = await axios.get(`${baseUrl}/tables`);
+      const getData = await axios.get(`${baseUrl}/tables/getTableById/${id}`);
+      setTableData(getData.data);
+      setTableInfo(response.data.rows);
+    } catch (error) {
+      console.error("Error fetching tables:", error);
+    }
+  };
   return (
     <div
       className={`fixed right-0 bg-slate-300 h-screen top-0 transition-all duration-500 w-[40dvh]  ${
@@ -85,15 +103,17 @@ export default function TableOp({
         {tableData?.waiters?.length > 0 ? (
           <div className="flex flex-col  items-center gap-7">
             <p>מלצר משויך </p>
-
             {tableData?.waiters.map((name) => {
               return (
-                <button className="btn btn-error">
-                  <p>{name.waiterName}</p>
-                </button>
+                <DeleteWaiterFromTable
+                  waiterName={name.waiterName}
+                  tableId={id}
+                  waiterId={name.id}
+                  getTable={getTable}
+                  getAllTables={getAllTables}
+                />
               );
             })}
-
             <div>
               <h2>הוסף מלצר נוסף</h2>
               <div>
@@ -145,7 +165,35 @@ export default function TableOp({
             </div>
           </div>
         )}
-        <div className="w-full">
+        <div className="w-full ">
+          {tableData?.availability ? (
+            <div>
+              <button
+                onClick={startOrder}
+                className="btn btn-success mt-10  w-full"
+              >
+                התחל הזמנה
+              </button>
+            </div>
+          ) : (
+            <div>
+              <AddOrder
+                tableId={id}
+                tableData={tableData}
+                getTable={getTable}
+                getAllTables={getAllTables}
+              />
+              <button
+                onClick={endOrder}
+                className="btn btn-error mt-10  w-full"
+              >
+                סיים הזמנה
+              </button>
+              <Seecurrent tableData={tableData} />
+            </div>
+          )}
+        </div>
+        <div className="w-full mt-10">
           <button onClick={handleDelete} className="btn btn-warning w-full">
             מחק
           </button>

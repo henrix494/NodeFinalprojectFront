@@ -5,21 +5,17 @@ import { useEffect, useState } from "react";
 import Tippy from "@tippyjs/react";
 import TableOp from "./components/TableOp";
 import "tippy.js/dist/tippy.css";
+import { baseUrl } from "./constants/baseUrl";
 function App() {
   const [numOfTables, setNumOfTables] = useState(0);
   const [tableInfo, setTableInfo] = useState();
   const [loading, setLoading] = useState(true);
   const [itemid, setItemId] = useState(null);
   const [menuopen, setMenuOpen] = useState(false);
-
   const handleAddTabe = async () => {
-    const addTable = await axios.post(
-      "https://nodefinalprojectback.onrender.com/tables/addTable"
-    );
+    const addTable = await axios.post(`${baseUrl}/tables/addTable`);
     try {
-      const response = await axios.get(
-        "https://nodefinalprojectback.onrender.com/tables"
-      );
+      const response = await axios.get(`${baseUrl}/tables/`);
       setTableInfo(response.data.rows);
       setNumOfTables(response.data.count);
       setLoading(false);
@@ -27,12 +23,27 @@ function App() {
       console.error("Error fetching tables:", error);
     }
   };
+  const closeModel = (action) => {
+    setMenuOpen(action);
+  };
+  const getTable = async (id) => {
+    const getData = await axios.get(`${baseUrl}/tables/getTableById/${id}`);
+    setTableData(getData.data);
+  };
+  const [waiterName, setWaiterName] = useState();
+  const [sentItem, setSendItem] = useState(false);
+  const addWaiter = async () => {
+    await axios.post(`${baseUrl}/waiters/addWaiter`, {
+      waiterName: waiterName,
+    });
+    setSendItem((prev) => {
+      !prev;
+    });
+  };
   useEffect(() => {
     const getAllTables = async () => {
       try {
-        const response = await axios.get(
-          "https://nodefinalprojectback.onrender.com/tables/"
-        );
+        const response = await axios.get(`${baseUrl}/tables`);
         setTableInfo(response.data.rows);
         setNumOfTables(response.data.count);
         setLoading(false);
@@ -43,36 +54,21 @@ function App() {
 
     getAllTables();
   }, []);
+  const getAllTables = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}/tables`);
+      setTableInfo(response.data.rows);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching tables:", error);
+    }
+  };
   const [tableData, setTableData] = useState();
-
   const handleTableClick = (id) => {
     setItemId(id);
     setMenuOpen(true);
     getTable(id);
   };
-  const closeModel = (action) => {
-    setMenuOpen(action);
-  };
-  const getTable = async (id) => {
-    const getData = await axios.get(
-      `https://nodefinalprojectback.onrender.com/tables/getTableById/${id}`
-    );
-    setTableData(getData.data);
-  };
-  const [waiterName, setWaiterName] = useState();
-  const [sentItem, setSendItem] = useState(false);
-  const addWaiter = async () => {
-    await axios.post(
-      "https://nodefinalprojectback.onrender.com/waiters/addWaiter",
-      {
-        waiterName: waiterName,
-      }
-    );
-    setSendItem((prev) => {
-      !prev;
-    });
-  };
-
   return (
     <div>
       {loading ? (
@@ -151,6 +147,8 @@ function App() {
           setTableInfo={setTableInfo}
           menuopen={menuopen}
           setTableData={setTableData}
+          getTable={getTable}
+          getAllTables={getAllTables}
         />
       </div>
     </div>
