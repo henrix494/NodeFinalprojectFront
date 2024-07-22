@@ -6,6 +6,8 @@ import Tippy from "@tippyjs/react";
 import TableOp from "./components/TableOp";
 import "tippy.js/dist/tippy.css";
 import { baseUrl } from "./constants/baseUrl";
+import Loading from "./components/Loading/Loading";
+
 function App() {
   const [numOfTables, setNumOfTables] = useState(0);
   const [tableInfo, setTableInfo] = useState();
@@ -13,12 +15,12 @@ function App() {
   const [itemid, setItemId] = useState(null);
   const [menuopen, setMenuOpen] = useState(false);
   const handleAddTabe = async () => {
+    setLoading(true);
     const addTable = await axios.post(`${baseUrl}/tables/addTable`);
     try {
       const response = await axios.get(`${baseUrl}/tables/`);
       setTableInfo(response.data.rows);
       setNumOfTables(response.data.count);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching tables:", error);
     }
@@ -42,6 +44,7 @@ function App() {
   };
   useEffect(() => {
     const getAllTables = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`${baseUrl}/tables`);
         setTableInfo(response.data.rows);
@@ -56,6 +59,7 @@ function App() {
   }, []);
   const getAllTables = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(`${baseUrl}/tables`);
       setTableInfo(response.data.rows);
       setLoading(false);
@@ -69,10 +73,11 @@ function App() {
     setMenuOpen(true);
     getTable(id);
   };
+
   return (
     <div>
       {loading ? (
-        <p>Loading...</p>
+        <Loading loading={loading} />
       ) : (
         <div>
           <div className="mb-10 flex justify-center mt-10 gap-10">
