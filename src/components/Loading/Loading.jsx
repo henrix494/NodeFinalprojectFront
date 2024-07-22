@@ -7,13 +7,11 @@ export default function Loading({ loading }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsOver(true);
-      document.body.classList.add("loaded");
-    }, 8000);
-    return () => clearTimeout(timer);
+    }, 2000);
   }, []);
 
   return (
-    <div className={`overlay ${loading ? "loaded" : ""}`}>
+    <div className={`overlay `}>
       <div className="overlayDoor"></div>
       <div className="overlayContent">
         <div className="loader">

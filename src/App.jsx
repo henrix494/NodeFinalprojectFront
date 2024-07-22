@@ -15,7 +15,6 @@ function App() {
   const [itemid, setItemId] = useState(null);
   const [menuopen, setMenuOpen] = useState(false);
   const handleAddTabe = async () => {
-    setLoading(true);
     const addTable = await axios.post(`${baseUrl}/tables/addTable`);
     try {
       const response = await axios.get(`${baseUrl}/tables/`);
@@ -43,8 +42,8 @@ function App() {
     });
   };
   useEffect(() => {
+    setLoading(true);
     const getAllTables = async () => {
-      setLoading(true);
       try {
         const response = await axios.get(`${baseUrl}/tables`);
         setTableInfo(response.data.rows);
@@ -59,10 +58,8 @@ function App() {
   }, []);
   const getAllTables = async () => {
     try {
-      setLoading(true);
       const response = await axios.get(`${baseUrl}/tables`);
       setTableInfo(response.data.rows);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching tables:", error);
     }
