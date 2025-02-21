@@ -1,88 +1,22 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { baseUrl } from "../constants/baseUrl";
-import AddOrder from "./addOrder/AddOrder";
-import DeleteWaiterFromTable from "./deleteWaiterFromTable/DeleteWaiterFromTable";
-import Seecurrent from "./Seecurrent/Seecurrent";
+/* eslint-disable react/prop-types */
+import AddOrder from "../addOrder/AddOrder";
+import Seecurrent from "../Seecurrent/Seecurrent";
+import DeleteWaiterFromTable from "../deleteWaiterFromTable/DeleteWaiterFromTable";
 export default function TableOp({
   id,
   close,
-  setMenuOpen,
-  setTableInfo,
   menuopen,
   tableData,
-  setTableData,
-  sentItem,
   getTable,
   getAllTables,
+  handleSelectChange,
+  waitersNames,
+  endOrder,
+  handleDelete,
+  sendWaiterToDb,
+  startOrder,
+  selectedWaiterId,
 }) {
-  const [waitersNames, setWaitersNames] = useState();
-  const [selectedWaiterId, setSelectedWaiterId] = useState(null);
-
-  useEffect(() => {
-    const getnames = async () => {
-      const data = await axios.get(`${baseUrl}/waiters/waiters`);
-      setWaitersNames(data.data.rows);
-    };
-    getnames();
-  }, [sentItem]);
-  const handleDelete = async () => {
-    const deleteTable = await axios.delete(
-      `${baseUrl}/tables/deleTableById/${id}`
-    );
-    try {
-      const response = await axios.get(`${baseUrl}/tables`);
-      setTableInfo(response.data.rows);
-    } catch (error) {
-      console.error("Error fetching tables:", error);
-    }
-    setMenuOpen(false);
-    console.log(deleteTable.data);
-  };
-  const handleSelectChange = (event) => {
-    const selectedId = event.target.value;
-    setSelectedWaiterId(selectedId);
-  };
-  const sendWaiterToDb = async () => {
-    const sendDataToDb = await axios.post(
-      `${baseUrl}/waiters/AddTableToWaiter`,
-      {
-        waiterId: selectedWaiterId,
-        TableId: id,
-      }
-    );
-    try {
-      const response = await axios.get(`${baseUrl}/tables`);
-      setTableInfo(response.data.rows);
-      const getData = await axios.get(`${baseUrl}/tables/getTableById/${id}`);
-      setTableData(getData.data);
-      console.log(tableData);
-    } catch (error) {
-      console.error("Error fetching tables:", error);
-    }
-  };
-  const startOrder = async () => {
-    try {
-      const startOr = await axios.post(`${baseUrl}/orders/startOrder/${id}`);
-      const response = await axios.get(`${baseUrl}/tables`);
-      const getData = await axios.get(`${baseUrl}/tables/getTableById/${id}`);
-      setTableData(getData.data);
-      setTableInfo(response.data.rows);
-    } catch (error) {
-      console.error("Error fetching tables:", error);
-    }
-  };
-  const endOrder = async () => {
-    try {
-      const endOr = await axios.post(`${baseUrl}/orders/endOrder/${id}`);
-      const response = await axios.get(`${baseUrl}/tables`);
-      const getData = await axios.get(`${baseUrl}/tables/getTableById/${id}`);
-      setTableData(getData.data);
-      setTableInfo(response.data.rows);
-    } catch (error) {
-      console.error("Error fetching tables:", error);
-    }
-  };
   return (
     <div
       className={`fixed right-0 bg-slate-300 h-screen top-0 transition-all duration-500 w-[40dvh]   overflow-auto ${
@@ -103,15 +37,17 @@ export default function TableOp({
         {tableData?.waiters?.length > 0 ? (
           <div className="flex flex-col  items-center gap-7">
             <p>מלצר משויך </p>
-            {tableData?.waiters.map((name) => {
+            {tableData?.waiters.map((name, index) => {
               return (
-                <DeleteWaiterFromTable
-                  waiterName={name.waiterName}
-                  tableId={id}
-                  waiterId={name.id}
-                  getTable={getTable}
-                  getAllTables={getAllTables}
-                />
+                <div key={index}>
+                  <DeleteWaiterFromTable
+                    waiterName={name.waiterName}
+                    tableId={id}
+                    waiterId={name.id}
+                    getTable={getTable}
+                    getAllTables={getAllTables}
+                  />
+                </div>
               );
             })}
             <div>
